@@ -1,0 +1,58 @@
+body{
+     max-width: 900px;
+     font-family: "Arial";
+     font-size: 1.2em;
+     margin: auto;
+}
+
+.container{
+    width: 800px;
+    border: 1px solid #ccc;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    position: relative;
+}
+
+.title{
+    margin: auto;
+    padding-top: 15px;
+    height: 60px;
+    font-size: 1.6em;
+    border-bottom: 1px dashed #000;
+    background-color: #eee;
+    vertical-align: middle;
+}
+
+.title:first-letter{
+    color: rgb(14, 108, 248);
+}
+
+.main-text{
+    border: 2px solid #ccc;
+    padding: 5px;
+    margin: 10px;
+    text-align: left;
+}
+
+#timer{
+    width: 80px;
+    font-size: 60px;
+    font-weight: bold;
+    position: absolute;
+    margin-left: 350px;
+    text-align: center;
+}
+
+#typer{
+    text-align: left;
+    margin: 10px;
+    width: 770px;
+    font-size: 1em;
+}
+
+#cpm{
+    margin: 10px;
+    height: 20px;
+}
