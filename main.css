@@ -56,3 +56,13 @@ body{
     margin: 10px;
     height: 20px;
 }
+
+.wrong-word{
+    color: #FFF;
+    background-color: #FF2815;
+}
+
+.correct-word{
+    color: #FFF;
+    background-color: #00fa15;
+}
