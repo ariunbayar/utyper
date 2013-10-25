@@ -35,9 +35,8 @@ var startRace = function() {
 }
 
 var getSecondsPassed = function() {
-    if (end){
-        now = end;
-    }else{
+    var now = end;
+    if (now == 0){
         now = new Date();
     }
     return (now - start) / 1000;
