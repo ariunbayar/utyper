@@ -65,7 +65,7 @@ var refresh = function() {
 var key = function(e) {
     var el = $('#typer');
     var cur_char = null;
-    var text = $('#text').html().substr(current_pos);
+    var text = $('#text').html().substr(current_pos) + ' ';
     var word = text.substr(0, text.indexOf(' ') + 1);
     var value = el.val();
 
@@ -82,14 +82,14 @@ var key = function(e) {
 
     if (value == word) {
         current_pos += value.length;
+        chars = current_pos;
         el.val('');
     }
-    if (chars == current_pos) {
+
+    if (total_chars == (current_pos - 1)) {
         clearTimeout(refresh_handle);
         end = new Date();
-        console.log(end);
     }
-
 }
 
 $(function() {
