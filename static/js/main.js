@@ -7,6 +7,8 @@ var cpm = 0;
 var refresh_handle = null;
 
 $(function(){
+    var random_number = Math.floor((Math.random()*5)+1);
+    $('#text').html($('#hidden_text' + random_number).html());
     timer();
 });
 
@@ -58,7 +60,7 @@ var getSecondsPassed = function() {
 var refresh = function() {
     var cpm_container = $('#cpm');
     cpm = chars / getSecondsPassed() * 60;
-    cpm_container.html(Math.round(cpm));
+    cpm_container.html(Math.round(cpm)+" cpm");
     refresh_handle = setTimeout('refresh();', 1000);
 }
 
