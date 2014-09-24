@@ -99,3 +99,10 @@ $(function() {
     typer.keyup(key);
     typer.keypress(key);
 });
+
+var commands = {
+    menu: function(){
+            $("#game").hide();
+            $("#menu").show();
+    }
+}
