@@ -311,12 +311,12 @@ var commands = {
                         cpm_container3.html(" : " + parseInt(data[2]) + " cpm");
                     }
                     last_cpm = Math.round(cpm);
-                    refresh_handle = setTimeout('commands.refresh();', 1000);
                 }
             });
         } else {
-            cpm_container1.html(" : " + Math.round(cpm) + " cpm");
+            cpm_container1.html(Math.round(cpm) + " cpm");
         }
+        refresh_handle = setTimeout('commands.refresh();', 1000);
     },
     key: function(e) {
         var el = $('#typer');
