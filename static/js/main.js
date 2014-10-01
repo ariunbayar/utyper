@@ -15,6 +15,7 @@ var multi_race = [];
 var topic = 0;
 var status = "";
 var last_cpm = 0;
+var is_single = false;
 
 var commands = {
 
@@ -26,6 +27,7 @@ var commands = {
     start_single: function() {
         $("#menu").hide();
         $("#game").show();
+        is_single = true;
         commands.init_jquery(5);
     },
     start_multiple: function() {
@@ -286,31 +288,35 @@ var commands = {
         var cpm_container2 = $('#cpm2');
         var cpm_container3 = $('#cpm3');
         cpm = chars / commands.getSecondsPassed() * 60;
-        $.ajax({
-            url: "controller.php",
-            type: "GET",
-            data: "phpsessid=" + getCookie("PHPSESSID") + "&cpm=" + Math.round(cpm),
-            success: function(rsp) {
-                console.log(rsp);
-                var data = rsp.split(" ");
-                var length = data.length;
+        if (!is_single ) {
+            $.ajax({
+                url: "controller.php",
+                type: "GET",
+                data: "phpsessid=" + getCookie("PHPSESSID") + "&cpm=" + Math.round(cpm),
+                success: function(rsp) {
+                    console.log(rsp);
+                    var data = rsp.split(" ");
+                    var length = data.length;
 
-                if (length == 1) {
-                    cpm_container1.html(" : " + Math.round(cpm) + " cpm");
+                    if (length == 1) {
+                        cpm_container1.html(" : " + Math.round(cpm) + " cpm");
+                    }
+                    if (length == 2) {
+                        cpm_container1.html(" : " + parseInt(data[1]) + " cpm");
+                        cpm_container2.html(" : " + parseInt(data[0]) + " cpm");
+                    }
+                    if (length == 3) {
+                        cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
+                        cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
+                        cpm_container3.html(" : " + parseInt(data[2]) + " cpm");
+                    }
+                    last_cpm = Math.round(cpm);
+                    refresh_handle = setTimeout('commands.refresh();', 1000);
                 }
-                if (length == 2) {
-                    cpm_container1.html(" : " + parseInt(data[1]) + " cpm");
-                    cpm_container2.html(" : " + parseInt(data[0]) + " cpm");
-                }
-                if (length == 3) {
-                    cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
-                    cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
-                    cpm_container3.html(" : " + parseInt(data[2]) + " cpm");
-                }
-                last_cpm = Math.round(cpm);
-                refresh_handle = setTimeout('commands.refresh();', 1000);
-            }
-        });
+            });
+        } else {
+            cpm_container1.html(" : " + Math.round(cpm) + " cpm");
+        }
     },
     key: function(e) {
         var el = $('#typer');
