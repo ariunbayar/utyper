@@ -1,27 +1,49 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="static/css/main.css" type="text/css" media="all" />
+    <link rel="stylesheet" type="text/css" href="static/css/main.css" media="all" />
     <title>Utyper | Хурдан бичээч</title>
 </head>
 <body>
-    <div class="menu" id="menu" style="display:none">
-        <div class="title"> uTyper | Хурдан бичээч </div>
-        <div id="start_single">
-            <a class="btn btn-single">Ганцаараа бичих</a>
+    <div class="menu" id="menu">
+        <div class="menu-header">
+            <p id="online-users"></p>
+            <div class="title"> uTyper | Хурдан бичээч</div>
         </div>
-        <div id="start_multiple">
-            <a class="btn btn-multiple">Бусадтай уралдах</a>
+        <div>
+            <a class="btn btn-single" href="javascript:commands.start_single()">Дадлага</a>
+        </div>
+        <div>
+            <a class="btn btn-multiple" href="javascript:commands.start_multiple()">Уралдаан</a>
         </div>
     </div>
-    <div class="container" id="game">
+    <div class="container" id="game" style="display:none">
         <div class="title"> uTyper | Хурдан бичээч
             <a class="btn-menu" href="javascript:commands.menu()">Меню</a>
         </div>
-        <div id="cpm"></div>
+        <div>
+            <span id="racer1_current"></span>
+            <span id="racer1"></span>
+            <span id="cpm1"></span>
+            <span id="status1"></span>
+        </div>
+        <div>
+            <span id="racer2_current"></span>
+            <span id="racer2"></span>
+            <span id="cpm2"></span>
+            <span id="status2"></span>
+        </div>
+        <div>
+            <span id="racer3_current"></span>
+            <span id="racer3"></span>
+            <span id="cpm3"></span>
+            <span id="status3"></span>
+        </div>
         <div id="timer"></div>
-        <div id="text" class="main-text">Нийслэлийн Ерөнхий төлөвлөгөөний газраас Улаанбаатар хотын 154 сургууль, 142 цэцэрлэгийн эдэлбэр газрыг олон улсын жишигт нийцүүлэн сайжруулахаар болжээ.</div>
+        <div id="temp"></div>
+        <div id="text" class="main-text"></div>
         <input id="typer" type="text" name="typer"/>
 
         <div id="hidden_text1" style="display:none">Тооцон бодох шинжлэх ухаан (эсвэл шинжлэх ухааны тооцоолол зүй) нь байгалийн ба нийгмийн шинжлэх ухаанууд, инженерчлэлийн бодлогуудыг компьютер ашиглан шинжлэх ба шийдэх, эдгээр бодлогуудад зориулсан математикийн загварууд болон тоон аргуудыг бий болгох асуудлыг судалдаг салбар юм. Практикт энэ нь ихэвчлэн шинжлэх ухааны (эсвэл инженерчлэлийн) бодлогонд компьютер симуляци эсвэл өөр төрлийн тооцоолол ашиглах явдал болдог. Энэ салбар нь компьютер судлалаас (тооцоолол, компьютер, ба мэдээлэл боловсруулалтын математик судалгаа) ялгаатай.</div>
@@ -29,9 +51,10 @@
         <div id="hidden_text3" style="display:none">Радио бол үзэгдэх гэрлээс доош давтамж бүхий цахилгаан соронзон долгионыг модуляцлан дохиог утасгүй дамжуулах технологи юм. Цахилгаан соронзон цацрагийн тархалт нь агаар буюу хоосон орон зайгаар тархах цахилгаан соронзон орны хэлбэлзлийг илэрхийлнэ.</div>
         <div id="hidden_text4" style="display:none">Зурагт (орос. Телевизор) гэдэг нь телевизийн өргөн цацалтыг хүлээн авч дуу авиаг сонсгож, дүрсийг үзүүлэх зориулалт бүхий төхөөрөмж юм.</div>
         <div id="hidden_text5" style="display:none">Мэдээлэл зүй буюу Информатик нь мэдээлэл боловсруулалт болон мэдээллийн системийн инженерчлэлийг практик хэрэглээ болгодог шинжлэх ухаан юм. Энэ шинжлэх ухаан нь бүтэц, алгоритм, горим, байгалийн болон хиймэл системүүдийн ажиллагааг судалдаг.</div>
+        <div id="hidden_text6" style="display:none">Нийслэлийн Ерөнхий төлөвлөгөөний газраас Улаанбаатар хотын 154 сургууль, 142 цэцэрлэгийн эдэлбэр газрыг олон улсын жишигт нийцүүлэн сайжруулахаар болжээ.</div>
     </div>
 
-    <script src="static/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="static/js/jquery.min.js" charset="utf-8"></script>
     <script src="static/js/main.js" type="text/javascript" charset="utf-8"></script>
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

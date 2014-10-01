@@ -175,3 +175,21 @@ body{
     color: #FFF;
     background-color: #00fa15;
 }
+
+#online-users{
+    text-align:right;
+    margin-top: inherit;
+    margin-right: 5px;
+    font-size: 0.8em;
+    unicode-bidi:bidi-override;
+    direction:rtl;
+}
+
+#online-users:first-letter{
+    color: red;
+}
+
+.menu-header{
+    background-color: #eee;
+}
+
