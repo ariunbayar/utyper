@@ -42,7 +42,7 @@ var commands = {
                     var racer1_el = $('#racer1');
                     var racer1_cur_el = $('#racer1_current');
                     racer1_el.css('color', multi_race[0]);
-                    racer1_cur_el.html('You: ');
+                    racer1_cur_el.html('Та : ');
                     racer1_el.html(multi_race[0]);
 
                     status = "r";
@@ -59,7 +59,7 @@ var commands = {
                     var racer2_el = $('#racer2');
                     var racer2_cur_el = $('#racer2_current');
                     racer2_el.css('color', multi_race[1]);
-                    racer2_cur_el.html('You: ');
+                    racer2_cur_el.html('Та : ');
                     racer2_el.html(multi_race[1]);
                     status = "g";
                     second_racer = true;
@@ -230,7 +230,7 @@ var commands = {
     },
     init_jquery: function(countdown) {
         $(function(){
-            var random_number = Math.floor((Math.random()*6)+1);
+            var random_number = Math.floor((Math.random()*5)+1);
             $('#text').html($('#hidden_text' + random_number).html());
             commands.player_timer(random_number, countdown);
             var typer = $('#typer');
