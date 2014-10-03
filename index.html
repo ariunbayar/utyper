@@ -8,44 +8,40 @@
 <body>
     <div class="menu" id="menu">
         <div class="menu-header">
-            <p id="online-users"></p>
             <div class="title"> uTyper | Хурдан бичээч</div>
         </div>
         <div>
-            <a class="btn btn-single" href="javascript:commands.start_single()">Дадлага</a>
+            <button class="btn" onclick="javascript:commands.start_single()"> Дадлага </button>
         </div>
         <div>
-            <a class="btn btn-multiple" href="javascript:commands.start_multiple()">Уралдаан</a>
+            <button class="btn" onclick="javascript:commands.start_multiple()">Уралдаан</button>
         </div>
     </div>
     <div class="container" id="game" style="display:none">
         <div class="title"> uTyper | Хурдан бичээч
-            <a class="btn-menu" href="javascript:commands.menu()">Меню</a>
+            <button class="btn btn-menu" onclick="javascript:commands.menu()">Меню</button>
         </div>
         <div>
             <span id="racer1_current"></span>
             <span id="racer1"></span>
             <span id="cpm1"></span>
-            <span id="status1"></span>
         </div>
         <div>
             <span id="racer2_current"></span>
             <span id="racer2"></span>
             <span id="cpm2"></span>
-            <span id="status2"></span>
         </div>
         <div>
             <span id="racer3_current"></span>
             <span id="racer3"></span>
             <span id="cpm3"></span>
-            <span id="status3"></span>
         </div>
         <div id="timer"></div>
         <div id="temp"></div>
         <div id="text" class="main-text">Нийслэлийн Ерөнхий төлөвлөгөөний газраас Улаанбаатар хотын 154 сургууль, 142 цэцэрлэгийн эдэлбэр газрыг олон улсын жишигт нийцүүлэн сайжруулахаар болжээ.</div>
         <input id="typer" type="text" name="typer"/>
 
-        <div id="hidden_text1" style="display:none">Тооцон бодох шинжлэх ухаан эсвэл шинжлэх ухааны тооцоолол зүй нь байгалийн ба нийгмийн шинжлэх ухаанууд, инженерчлэлийн бодлогуудыг компьютер ашиглан шинжлэх ба шийдэх, эдгээр бодлогуудад зориулсан математикийн загварууд болон тоон аргуудыг бий болгох асуудлыг судалдаг салбар юм. Практикт энэ нь ихэвчлэн шинжлэх ухааны (эсвэл инженерчлэлийн) бодлогонд компьютер симуляци эсвэл өөр төрлийн тооцоолол ашиглах явдал болдог. Энэ салбар нь компьютер судлалаас (тооцоолол, компьютер, ба мэдээлэл боловсруулалтын математик судалгаа) ялгаатай.</div>
+        <div id="hidden_text1" style="display:none">Тооцон бодох шинжлэх ухаан эсвэл шинжлэх ухааны тооцоолол зүй нь байгалийн ба нийгмийн шинжлэх ухаанууд, инженерчлэлийн бодлогуудыг компьютер ашиглан шинжлэх ба шийдэх, эдгээр бодлогуудад зориулсан математикийн загварууд болон тоон аргуудыг бий болгох асуудлыг судалдаг салбар юм. Практикт энэ нь ихэвчлэн шинжлэх ухааны бодлогонд компьютер симуляци эсвэл өөр төрлийн тооцоолол ашиглах явдал болдог. Энэ салбар нь компьютер судлалаас ялгаатай.</div>
         <div id="hidden_text2" style="display:none">Автомашин нь өөрийн гэсэн хөдөлгүүртэй, дугуйтай тээврийн хэрэгсэл юм. 2002 оны байдлаар дэлхий даяар 590 сая автомашин байдаг. Өнөөдөр олон арван автомашины фирмүүд автомашины зах зээл дээр хүчтэй өрсөлдөж байна. Өнөөдөр цахилгаан хөдөлгүүртэй болон холимог хөдөлгүүртэй автомашинуудыг амжилттай үйлдвэрлэхийн төлөө үйлдвэрлэгчид хүчтэй судалгаа шинжилгээ хийж шаргуу ажиллаж байна.</div>
         <div id="hidden_text3" style="display:none">Радио бол үзэгдэх гэрлээс доош давтамж бүхий цахилгаан соронзон долгионыг модуляцлан дохиог утасгүй дамжуулах технологи юм. Цахилгаан соронзон цацрагийн тархалт нь агаар буюу хоосон орон зайгаар тархах цахилгаан соронзон орны хэлбэлзлийг илэрхийлнэ.</div>
         <div id="hidden_text4" style="display:none">Зурагт гэдэг нь телевизийн өргөн цацалтыг хүлээн авч дуу авиаг сонсгож, дүрсийг үзүүлэх зориулалт бүхий төхөөрөмж юм.</div>

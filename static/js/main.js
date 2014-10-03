@@ -7,143 +7,149 @@ var cpm1 = 0;
 var cpm2 = 0;
 var cpm3 = 0;
 var refresh_handle = null;
-var cars = [ "Red", "Green", "Blue", "Yellow", "Purple"];
+
+var cars = [ "Red", "Green", "Blue", "Black", "Purple"];
 var first_racer = false;
 var second_racer = false;
 var third_racer = false;
 var multi_race = [];
+
 var topic = 0;
-var status = "";
-var last_cpm = 0;
 var is_single = false;
+var is_creator = true;
 
 var commands = {
 
     menu: function() {
         $("#game").hide();
         $("#menu").show();
+        removePlayer();
         location.reload();
     },
     start_single: function() {
         $("#menu").hide();
         $("#game").show();
         is_single = true;
+
+        var img_el = document.createElement("img");
+        var racer1_el = $('#racer1');
+        var random_car = Math.floor((Math.random()*4));
+        img_el.src = '/static/img/' + cars[random_car] + '.png';
+        racer1_el.html(img_el);
+
         commands.init_jquery(5);
     },
     start_multiple: function() {
         $("#menu").hide();
         $("#game").show();
+
         $.ajax({
             url: "controller.php",
             type: "GET",
-            data: "phpsessid=" + getCookie("PHPSESSID") + "&count=true",
             success: function(rsp) {
-                if (rsp == 1 && !first_racer) {
-                    multi_race.push(cars.shift());
-
+                if (rsp == 1) {
+                    var img_el = document.createElement("img");
                     var racer1_el = $('#racer1');
                     var racer1_cur_el = $('#racer1_current');
-                    racer1_el.css('color', multi_race[0]);
+
+                    // Racer 1 - creator - current racer
+                    multi_race.push(cars.shift());
+                    img_el.src = '/static/img/' + multi_race[0] + '.png';
                     racer1_cur_el.html('Та : ');
-                    racer1_el.html(multi_race[0]);
+                    racer1_el.html(img_el);
 
-                    status = "r";
-                    first_racer = true;
                     commands.init_jquery(30);
-                    checkPlayer();
-                } else if (rsp == 2 && !second_racer) {
-                    multi_race.push(cars.shift());
+                } else if (rsp == 2) {
+                    var img_el1 = document.createElement("img");
                     var racer1_el = $('#racer1');
-                    racer1_el.css('color', multi_race[0]);
-                    racer1_el.html(multi_race[0]);
+                    var racer1_cur_el = $('#racer1_current');
 
-                    multi_race.push(cars.shift());
+                    var img_el2 = document.createElement("img");
                     var racer2_el = $('#racer2');
                     var racer2_cur_el = $('#racer2_current');
-                    racer2_el.css('color', multi_race[1]);
+
+                    // Racer 1
+                    multi_race.push(cars.shift());
+                    img_el1.src = '/static/img/' + multi_race[0] + '.png';
+                    racer1_cur_el.html('___');
+                    racer1_el.html(img_el1);
+
+                    // Racer 2 - current racer
+                    multi_race.push(cars.shift());
+                    img_el2.src = '/static/img/' + multi_race[1] + '.png';
                     racer2_cur_el.html('Та : ');
-                    racer2_el.html(multi_race[1]);
-                    status = "g";
-                    second_racer = true;
+                    racer2_el.html(img_el2);
 
                     $.ajax({
-                        url: "controller.php",
+                        url: "race.php",
                         type: "GET",
-                        data: "phpsessid=" + getCookie("PHPSESSID") + "&getSession=true",
-                        success: function(rsp_session) {
-                            if (rsp_session) {
-                                $.ajax({
-                                    url: "game.php",
-                                    type: "GET",
-                                    data: "getCountdown=true" + "&phpsessid=" + rsp_session,
-                                    success: function(rsp) {
-                                        data = rsp.split(" ");
-                                        topic = data[0];
-                                        follower = data[1];
-                                        cnt = data[2];
-                                        $('#text').html($('#hidden_text' + topic).html());
-                                        var typer = $('#typer');
-                                        typer.keyup(commands.key);
-                                        typer.keypress(commands.key);
-                                        commands.timer(cnt);
-                                    }
-                                })
-                            }
+                        data: "getCountdownAndTopic=true",
+                        success: function(rsp) {
+                            console.log(rsp);
+                            data = rsp.split(" ");
+                            cnt = data[0];
+                            topic = data[1];
+
+                            $('#text').html($('#hidden_text' + topic).html());
+                            var typer = $('#typer');
+                            typer.keyup(commands.key);
+                            typer.keypress(commands.key);
+                            commands.timer(cnt);
                         }
                     });
-                    checkPlayer();
-                } else if (rsp == 3 && !third_racer) {
-                    multi_race.push(cars.shift());
+                } else if (rsp == 3) {
+                    var img_el1 = document.createElement("img");
                     var racer1_el = $('#racer1');
-                    racer1_el.css('color', multi_race[0]);
-                    racer1_el.html(multi_race[0]);
+                    var racer1_cur_el = $('#racer1_current');
 
-                    multi_race.push(cars.shift());
+                    var img_el2 = document.createElement("img");
                     var racer2_el = $('#racer2');
-                    racer2_el.css('color', multi_race[1]);
-                    racer2_el.html(multi_race[1]);
+                    var racer2_cur_el = $('#racer2_current');
 
-                    multi_race.push(cars.shift());
+                    var img_el3 = document.createElement("img");
                     var racer3_el = $('#racer3');
                     var racer3_cur_el = $('#racer3_current');
-                    racer3_el.css('color', multi_race[2]);
-                    racer3_cur_el.html('You: ');
-                    racer3_el.html(multi_race[2]);
-                    third_racer = true;
 
-                    // TODO:
-                    //$.ajax({
-                    //    url: "controller.php",
-                    //    type: "GET",
-                    //    data: "phpsessid=" + getCookie("PHPSESSID") + "&getSession=true",
-                    //    success: function(rsp_session) {
-                    //        if (rsp_session) {
-                    //            $.ajax({
-                    //                url: "game.php",
-                    //                type: "GET",
-                    //                data: "getCountdown=true" + "&phpsessid=" + rsp_session,
-                    //                success: function(rsp) {
-                    //                    data = rsp.split(" ");
-                    //                    topic = data[0];
-                    //                    follower = data[1];
-                    //                    cnt = data[2];
-                    //                    $('#text').html($('#hidden_text' + topic).html());
-                    //                    var typer = $('#typer');
-                    //                    typer.keyup(commands.key);
-                    //                    typer.keypress(commands.key);
-                    //                    commands.timer(cnt);
-                    //                }
-                    //            })
-                    //        }
-                    //    }
-                    //});
-                    //checkPlayer();
+                    // Racer 1
+                    multi_race.push(cars.shift());
+                    img_el1.src = '/static/img/' + multi_race[0] + '.png';
+                    racer1_cur_el.html('___');
+                    racer1_el.html(img_el1);
+
+                    // Racer 2
+                    multi_race.push(cars.shift());
+                    img_el2.src = '/static/img/' + multi_race[1] + '.png';
+                    racer2_cur_el.html('___');
+                    racer2_el.html(img_el2);
+
+                    // Racer 3 - current racer
+                    multi_race.push(cars.shift());
+                    img_el3.src = '/static/img/' + multi_race[2] + '.png';
+                    racer3_cur_el.html('Та : ');
+                    racer3_el.html(img_el3);
+
+                    $.ajax({
+                        url: "race.php",
+                        type: "GET",
+                        data: "getCountdownAndTopic=true",
+                        success: function(rsp) {
+                            console.log(rsp);
+                            data = rsp.split(" ");
+                            cnt = data[0];
+                            topic = data[1];
+
+                            $('#text').html($('#hidden_text' + topic).html());
+                            var typer = $('#typer');
+                            typer.keyup(commands.key);
+                            typer.keypress(commands.key);
+                            commands.timer(cnt);
+                        }
+                    });
                 }
             }
         });
     },
     player_timer: function(topic, countdown) {
-        if (commands.stop) return;
         var countdown_el = $('#timer');
         var temp_el = $('#temp');
         if (countdown_el.data('countdown')) {
@@ -156,70 +162,70 @@ var commands = {
         temp_el.data('topic', topic);
 
         if (countdown < 30 && countdown > 4) {
+            if (is_creator) {
+                $.ajax({
+                    url: "race.php",
+                    type: "GET",
+                    data: "topic=" + topic + "&countdown=" + countdown + "&follower=0",
+                    success: function(rsp) {
+                    }
+                });
+            }
+
             $.ajax({
-                url: "game.php",
+                url: "controller.php",
                 type: "GET",
-                data: "phpsessid=" + getCookie("PHPSESSID") + "&topic=" + topic + "&countdown=" + countdown + "&follower=0",
-                success: function(rsp) {
-                    var data = rsp.split(" ");
-                    var follower = data[1];
-                    var cnt = data[2];
+                success: function(player_count) {
+                    console.log(player_count);
+                    if (player_count == 2) {
+                        is_creator = false;
+                        var img_el = document.createElement("img");
+                        var racer2_el = $('#racer2');
+                        var racer2_cur_el = $('#racer2_current');
 
-                    $.ajax({
-                        url: "controller.php",
-                        type: "GET",
-                        data: "phpsessid=" + getCookie("PHPSESSID") + "&count=true",
-                        success: function(rsp) {
-                            if (rsp == 2) {
-                                multi_race.push(cars.shift());
+                        multi_race.push(cars.shift());
+                        img_el.src = '/static/img/' + multi_race[1] + '.png';
+                        racer2_cur_el.html('___');
+                        racer2_el.html(img_el);
 
-                                var racer2_el = $('#racer2');
-                                racer2_el.css('color', multi_race[1]);
-                                racer2_el.html(multi_race[1]);
-                                $.ajax({
-                                    url: "controller.php",
-                                    type: "GET",
-                                    data: "phpsessid=" + getCookie("PHPSESSID") + "&getSession=true",
-                                    success: function(rsp_session) {
-                                        if (rsp_session) {
-                                            var follower_cnt = 1;
-                                            $.ajax({
-                                                url: "game.php",
-                                                type: "GET",
-                                                data: "phpsessid=" + getCookie("PHPSESSID") + "&topic=" + topic + "&countdown=" + countdown + "&follower=" + follower_cnt,
-                                                success: function(rsp) {
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
-
-                            } else if (rsp == 3) {
-                                multi_race.push(cars.shift());
-
-                                var racer2_el = $('#racer2');
-                                racer2_el.css('color', multi_race[1]);
-                                racer2_el.html(multi_race[1]);
-                                $.ajax({
-                                    url: "controller.php",
-                                    type: "GET",
-                                    data: "phpsessid=" + getCookie("PHPSESSID") + "&getSession=true",
-                                    success: function(rsp_session) {
-                                        if (rsp_session) {
-                                            var follower_cnt = 2;
-                                            $.ajax({
-                                                url: "game.php",
-                                                type: "GET",
-                                                data: "phpsessid=" + getCookie("PHPSESSID") + "&topic=" + topic + "&countdown=" + countdown + "&follower=" + follower_cnt,
-                                                success: function(rsp) {
-                                                }
-                                            })
-                                        }
-                                    }
-                                });
+                        $.ajax({
+                            url: "race.php",
+                            type: "GET",
+                            data: "topic=" + topic + "&countdown=" + countdown + "&follower=1",
+                            success: function(rsp) {
                             }
-                        }
-                    });
+                        });
+                    } else if (player_count == 3) {
+                        is_creator = false;
+                        var img_el2 = document.createElement("img");
+                        var racer2_el = $('#racer2');
+                        var racer2_cur_el = $('#racer2_current');
+
+                        var img_el3 = document.createElement("img");
+                        var racer3_el = $('#racer3');
+                        var racer3_cur_el = $('#racer3_current');
+
+                        // Racer 2
+                        multi_race.push(cars.shift());
+                        img_el2.src = '/static/img/' + multi_race[1] + '.png';
+                        racer2_cur_el.html('___');
+                        racer2_el.html(img_el);
+
+                        // Racer 3
+                        multi_race.push(cars.shift());
+                        img_el2.src = '/static/img/' + multi_race[1] + '.png';
+                        racer2_cur_el.html('___');
+                        racer2_el.html(img_el);
+
+                        $.ajax({
+                            url: "race.php",
+                            type: "GET",
+                            data: "topic=" + topic + "&countdown=" + countdown + "&follower=2",
+                            success: function(rsp) {
+                            }
+                        });
+                    }
+                    // TODO: Racer 4,5
                 }
             });
         }
@@ -288,11 +294,11 @@ var commands = {
         var cpm_container2 = $('#cpm2');
         var cpm_container3 = $('#cpm3');
         cpm = chars / commands.getSecondsPassed() * 60;
-        if (!is_single ) {
+        if (!is_single) {
             $.ajax({
                 url: "controller.php",
                 type: "GET",
-                data: "phpsessid=" + getCookie("PHPSESSID") + "&cpm=" + Math.round(cpm),
+                data: "cpm=" + Math.round(cpm),
                 success: function(rsp) {
                     console.log(rsp);
                     var data = rsp.split(" ");
@@ -302,9 +308,10 @@ var commands = {
                         cpm_container1.html(" : " + Math.round(cpm) + " cpm");
                     }
                     if (length == 2) {
-                        cpm_container1.html(" : " + parseInt(data[1]) + " cpm");
-                        cpm_container2.html(" : " + parseInt(data[0]) + " cpm");
+                        cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
+                        cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
                     }
+                    //TODO
                     if (length == 3) {
                         cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
                         cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
@@ -314,7 +321,7 @@ var commands = {
                 }
             });
         } else {
-            cpm_container1.html(Math.round(cpm) + " cpm");
+            cpm_container1.html(" : " + Math.round(cpm) + " cpm");
         }
         refresh_handle = setTimeout('commands.refresh();', 1000);
     },
@@ -344,50 +351,30 @@ var commands = {
 
         if (total_chars == (current_pos - 1)) {
             clearTimeout(refresh_handle);
-            var cpm_container1 = $('#cpm1');
-            var cpm_container2 = $('#cpm2');
-            var cpm_container3 = $('#cpm3');
-
-            if (status == 'r') {
-                cpm_container1.html(last_cpm + " cpm");
-                //$.ajax({
-                //    url: "controller.php",
-                //    type: "GET",
-                //    data: "phpsessid=" + getCookie("PHPSESSID") + "&cpm=" + last_cpm,
-                //    success: function(rsp) {
-                //        console.log(rsp);
-                //    }
-                //});
-            }
-            if (status == 'g') {
-                cpm_container2.html(last_cpm + " cpm");
-            }
-            if (status == 'b') {
-                cpm_container3.html(last_cpm + " cpm");
-            }
             end = new Date();
         }
     }
 }
 
-var getCookie = function(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
-    }
-    return "";
-}
-
-var checkPlayer = function() {
+var removePlayer = function() {
     $.ajax({
-        url: "controller.php",
+        url: "destroy.php",
         type: "GET",
-        data: "phpsessid=" + getCookie("PHPSESSID") + "&count=true",
+        data: "remove=player",
         success: function(rsp) {
-            setTimeout('checkPlayer()', 1000);
+            console.log(rsp);
+        }
+    });
+}
+removePlayer();
+
+var removeGame = function() {
+    $.ajax({
+        url: "destroy.php",
+        type: "GET",
+        data: "remove=game",
+        success: function(rsp) {
+            console.log(rsp);
         }
     });
 }
