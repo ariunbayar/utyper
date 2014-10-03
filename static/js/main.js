@@ -9,10 +9,17 @@ var cpm3 = 0;
 var refresh_handle = null;
 
 var cars = [ "Red", "Green", "Blue", "Black", "Purple"];
-var first_racer = false;
-var second_racer = false;
-var third_racer = false;
-var multi_race = [];
+
+// Racers
+var first_racer  = false;
+var second_racer1 = false;
+var second_racer2 = false;
+var second_racer3 = false;
+var third_racer1  = false;
+var third_racer2  = false;
+var fourth_racer  = false;
+var fifth_racer   = false;
+var multi_race    = [];
 
 var topic = 0;
 var is_single = false;
@@ -31,12 +38,7 @@ var commands = {
         $("#game").show();
         is_single = true;
 
-        var img_el = document.createElement("img");
-        var racer1_el = $('#racer1');
-        var random_car = Math.floor((Math.random()*4));
-        img_el.src = '/static/img/' + cars[random_car] + '.png';
-        racer1_el.html(img_el);
-
+        racer1(false);
         commands.init_jquery(5);
     },
     start_multiple: function() {
@@ -48,44 +50,20 @@ var commands = {
             type: "GET",
             success: function(rsp) {
                 if (rsp == 1) {
-                    var img_el = document.createElement("img");
-                    var racer1_el = $('#racer1');
-                    var racer1_cur_el = $('#racer1_current');
-
                     // Racer 1 - creator - current racer
-                    multi_race.push(cars.shift());
-                    img_el.src = '/static/img/' + multi_race[0] + '.png';
-                    racer1_cur_el.html('Та : ');
-                    racer1_el.html(img_el);
-
+                    racer1(true);
                     commands.init_jquery(30);
                 } else if (rsp == 2) {
-                    var img_el1 = document.createElement("img");
-                    var racer1_el = $('#racer1');
-                    var racer1_cur_el = $('#racer1_current');
-
-                    var img_el2 = document.createElement("img");
-                    var racer2_el = $('#racer2');
-                    var racer2_cur_el = $('#racer2_current');
-
                     // Racer 1
-                    multi_race.push(cars.shift());
-                    img_el1.src = '/static/img/' + multi_race[0] + '.png';
-                    racer1_cur_el.html('___');
-                    racer1_el.html(img_el1);
-
+                    racer1(false);
                     // Racer 2 - current racer
-                    multi_race.push(cars.shift());
-                    img_el2.src = '/static/img/' + multi_race[1] + '.png';
-                    racer2_cur_el.html('Та : ');
-                    racer2_el.html(img_el2);
+                    racer2(true);
 
                     $.ajax({
                         url: "race.php",
                         type: "GET",
                         data: "getCountdownAndTopic=true",
                         success: function(rsp) {
-                            console.log(rsp);
                             data = rsp.split(" ");
                             cnt = data[0];
                             topic = data[1];
@@ -98,42 +76,66 @@ var commands = {
                         }
                     });
                 } else if (rsp == 3) {
-                    var img_el1 = document.createElement("img");
-                    var racer1_el = $('#racer1');
-                    var racer1_cur_el = $('#racer1_current');
-
-                    var img_el2 = document.createElement("img");
-                    var racer2_el = $('#racer2');
-                    var racer2_cur_el = $('#racer2_current');
-
-                    var img_el3 = document.createElement("img");
-                    var racer3_el = $('#racer3');
-                    var racer3_cur_el = $('#racer3_current');
-
-                    // Racer 1
-                    multi_race.push(cars.shift());
-                    img_el1.src = '/static/img/' + multi_race[0] + '.png';
-                    racer1_cur_el.html('___');
-                    racer1_el.html(img_el1);
-
-                    // Racer 2
-                    multi_race.push(cars.shift());
-                    img_el2.src = '/static/img/' + multi_race[1] + '.png';
-                    racer2_cur_el.html('___');
-                    racer2_el.html(img_el2);
-
+                    // Racer 1,2
+                    racer1(false);
+                    racer2(false);
                     // Racer 3 - current racer
-                    multi_race.push(cars.shift());
-                    img_el3.src = '/static/img/' + multi_race[2] + '.png';
-                    racer3_cur_el.html('Та : ');
-                    racer3_el.html(img_el3);
+                    racer3(true);
 
                     $.ajax({
                         url: "race.php",
                         type: "GET",
                         data: "getCountdownAndTopic=true",
                         success: function(rsp) {
-                            console.log(rsp);
+                            data = rsp.split(" ");
+                            cnt = data[0];
+                            topic = data[1];
+
+                            $('#text').html($('#hidden_text' + topic).html());
+                            var typer = $('#typer');
+                            typer.keyup(commands.key);
+                            typer.keypress(commands.key);
+                            commands.timer(cnt);
+                        }
+                    });
+                } else if (rsp == 4) {
+                    // Racer 1,2,3
+                    racer1(false);
+                    racer2(false);
+                    racer3(false);
+                    // Racer 4 - current racer
+                    racer4(true);
+
+                    $.ajax({
+                        url: "race.php",
+                        type: "GET",
+                        data: "getCountdownAndTopic=true",
+                        success: function(rsp) {
+                            data = rsp.split(" ");
+                            cnt = data[0];
+                            topic = data[1];
+
+                            $('#text').html($('#hidden_text' + topic).html());
+                            var typer = $('#typer');
+                            typer.keyup(commands.key);
+                            typer.keypress(commands.key);
+                            commands.timer(cnt);
+                        }
+                    });
+                } else if (rsp == 5) {
+                    // Racer 1,2,3,4
+                    racer1(false);
+                    racer2(false);
+                    racer3(false);
+                    racer4(false);
+                    // Racer 5 - current racer
+                    racer5(true);
+
+                    $.ajax({
+                        url: "race.php",
+                        type: "GET",
+                        data: "getCountdownAndTopic=true",
+                        success: function(rsp) {
                             data = rsp.split(" ");
                             cnt = data[0];
                             topic = data[1];
@@ -179,14 +181,8 @@ var commands = {
                     console.log(player_count);
                     if (player_count == 2) {
                         is_creator = false;
-                        var img_el = document.createElement("img");
-                        var racer2_el = $('#racer2');
-                        var racer2_cur_el = $('#racer2_current');
-
-                        multi_race.push(cars.shift());
-                        img_el.src = '/static/img/' + multi_race[1] + '.png';
-                        racer2_cur_el.html('___');
-                        racer2_el.html(img_el);
+                        // Add racer 2 in racer1's game
+                        racer2(false);
 
                         $.ajax({
                             url: "race.php",
@@ -197,25 +193,8 @@ var commands = {
                         });
                     } else if (player_count == 3) {
                         is_creator = false;
-                        var img_el2 = document.createElement("img");
-                        var racer2_el = $('#racer2');
-                        var racer2_cur_el = $('#racer2_current');
-
-                        var img_el3 = document.createElement("img");
-                        var racer3_el = $('#racer3');
-                        var racer3_cur_el = $('#racer3_current');
-
-                        // Racer 2
-                        multi_race.push(cars.shift());
-                        img_el2.src = '/static/img/' + multi_race[1] + '.png';
-                        racer2_cur_el.html('___');
-                        racer2_el.html(img_el);
-
-                        // Racer 3
-                        multi_race.push(cars.shift());
-                        img_el2.src = '/static/img/' + multi_race[1] + '.png';
-                        racer2_cur_el.html('___');
-                        racer2_el.html(img_el);
+                        // Add racer 3 in racer1's game
+                        racer3(false);
 
                         $.ajax({
                             url: "race.php",
@@ -224,10 +203,34 @@ var commands = {
                             success: function(rsp) {
                             }
                         });
+                    } else if (player_count == 4) {
+                        is_creator = false;
+                        // Add racer 4 in racer1's game
+                        racer4(false);
+
+                        $.ajax({
+                            url: "race.php",
+                            type: "GET",
+                            data: "topic=" + topic + "&countdown=" + countdown + "&follower=3",
+                            success: function(rsp) {
+                            }
+                        });
+                    } else if (player_count == 5) {
+                        is_creator = false;
+                        // Add racer 5 in racer1's game
+                        racer5(false);
+
+                        $.ajax({
+                            url: "race.php",
+                            type: "GET",
+                            data: "topic=" + topic + "&countdown=" + countdown + "&follower=4",
+                            success: function(rsp) {
+                            }
+                        });
                     }
-                    // TODO: Racer 4,5
                 }
             });
+            checkPlayer();
         }
         countdown_el.html(countdown);
         if (countdown > 4) {
@@ -293,6 +296,8 @@ var commands = {
         var cpm_container1 = $('#cpm1');
         var cpm_container2 = $('#cpm2');
         var cpm_container3 = $('#cpm3');
+        var cpm_container4 = $('#cpm4');
+        var cpm_container5 = $('#cpm5');
         cpm = chars / commands.getSecondsPassed() * 60;
         if (!is_single) {
             $.ajax({
@@ -311,13 +316,24 @@ var commands = {
                         cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
                         cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
                     }
-                    //TODO
                     if (length == 3) {
                         cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
                         cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
                         cpm_container3.html(" : " + parseInt(data[2]) + " cpm");
                     }
-                    last_cpm = Math.round(cpm);
+                    if (length == 4) {
+                        cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
+                        cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
+                        cpm_container3.html(" : " + parseInt(data[2]) + " cpm");
+                        cpm_container4.html(" : " + parseInt(data[3]) + " cpm");
+                    }
+                    if (length == 5) {
+                        cpm_container1.html(" : " + parseInt(data[0]) + " cpm");
+                        cpm_container2.html(" : " + parseInt(data[1]) + " cpm");
+                        cpm_container3.html(" : " + parseInt(data[2]) + " cpm");
+                        cpm_container4.html(" : " + parseInt(data[3]) + " cpm");
+                        cpm_container5.html(" : " + parseInt(data[4]) + " cpm");
+                    }
                 }
             });
         } else {
@@ -377,4 +393,117 @@ var removeGame = function() {
             console.log(rsp);
         }
     });
+}
+
+var checkPlayer = function() {
+    $.ajax({
+        url: "controller.php",
+        type: "GET",
+        success: function(rsp) {
+            if (rsp == 3 && !second_racer1) {
+                // Add Racer 3 in Racer 2's game
+                racer3(false);
+                second_racer1 = true;
+            } else if (rsp == 4 && !second_racer2) {
+                // Add Racer 3,4 in Racer 2's game
+                racer3(false);
+                racer4(false);
+                second_racer2 = true;
+            } else if (rsp == 4 && !third_racer1) {
+                // Add Racer 4 in Racer 3's game
+                racer4(false);
+                third_racer1 = true;
+            } else if (rsp == 5 && !second_racer3) {
+                // Add Racer 3,4,5 in Racer 2's game
+                racer3(false);
+                racer4(false);
+                racer5(false);
+                second_racer3 = true;
+            } else if (rsp == 5 && !third_racer2) {
+                // Add Racer 4,5 in Racer 3's game
+                racer4(false);
+                racer5(false);
+                third_racer2 = true;
+            } else if (rsp == 5 && !fourth_racer) {
+                // Add Racer 5 in Racer 4's game
+                racer5(false);
+                fourth_racer = true;
+            }
+        }
+    });
+}
+
+var racer1 = function(current) {
+    var img_el1 = document.createElement("img");
+    var racer1_el = $('#racer1');
+    var racer1_cur_el = $('#racer1_current');
+
+    multi_race.push(cars.shift());
+    img_el1.src = '/static/img/' + multi_race[0] + '.png';
+    if (current) {
+        racer1_cur_el.html('Та : ');
+    } else {
+        racer1_cur_el.html('___');
+    }
+    racer1_el.html(img_el1);
+}
+
+var racer2 = function(current) {
+    var img_el2 = document.createElement("img");
+    var racer2_el = $('#racer2');
+    var racer2_cur_el = $('#racer2_current');
+
+    multi_race.push(cars.shift());
+    img_el2.src = '/static/img/' + multi_race[1] + '.png';
+    if (current) {
+        racer2_cur_el.html('Та : ');
+    } else {
+        racer2_cur_el.html('___');
+    }
+    racer2_el.html(img_el2);
+}
+
+var racer3 = function(current) {
+    var img_el3 = document.createElement("img");
+    var racer3_el = $('#racer3');
+    var racer3_cur_el = $('#racer3_current');
+
+    multi_race.push(cars.shift());
+    img_el3.src = '/static/img/' + multi_race[2] + '.png';
+    if (current) {
+        racer3_cur_el.html('Та : ');
+    } else {
+        racer3_cur_el.html('___');
+    }
+    racer3_el.html(img_el3);
+}
+
+var racer4 = function(current) {
+    var img_el4 = document.createElement("img");
+    var racer4_el = $('#racer4');
+    var racer4_cur_el = $('#racer4_current');
+
+    multi_race.push(cars.shift());
+    img_el4.src = '/static/img/' + multi_race[3] + '.png';
+    if (current) {
+        racer4_cur_el.html('Та : ');
+    } else {
+        racer4_cur_el.html('___');
+    }
+    racer4_el.html(img_el4);
+}
+
+var racer5 = function(current) {
+    var img_el5 = document.createElement("img");
+    var racer5_el = $('#racer5');
+    var racer5_cur_el = $('#racer5_current');
+
+    multi_race.push(cars.shift());
+    img_el5.src = '/static/img/' + multi_race[4] + '.png';
+    if (current) {
+        racer5_cur_el.html('Та : ');
+    } else {
+        racer5_cur_el.html('___');
+    }
+    racer5_el.html(img_el5);
 }

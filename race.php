@@ -31,7 +31,7 @@ function actionGet($_table) {
     $link = open_database_connection();
     $query = "
             SELECT `countdown`, `topic`  FROM $_table
-            WHERE `follower` < 2
+            WHERE `follower` < 4
             ";
     $result = mysqli_query($link, $query) or die(mysql_error());
     $row = mysqli_fetch_assoc($result);
