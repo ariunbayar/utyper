@@ -50,7 +50,6 @@ var commands = {
             data: "status=2",
             type: "GET",
             success: function(rsp) {
-                console.log(rsp);
                 if (rsp == 1) {
                     // Racer 1 - creator - current racer
                     racer1(true);
@@ -428,7 +427,6 @@ var removeRace = function() {
         type: "GET",
         data: "remove=race",
         success: function(rsp) {
-            console.log(rsp);
         }
     });
 }
@@ -441,15 +439,39 @@ var checkRacers = function(status_num) {
         type: "GET",
         success: function(rsp) {
             if (rsp == 1) {
+                $("#r1").show();
                 $("#r2").hide();
                 $("#r3").hide();
                 $("#r4").hide();
                 $("#r5").hide();
             }
             if (rsp == 2) {
+                $("#r1").show();
+                $("#r2").show();
                 $("#r3").hide();
                 $("#r4").hide();
                 $("#r5").hide();
+            }
+            if (rsp == 3) {
+                $("#r1").show();
+                $("#r2").show();
+                $("#r3").show();
+                $("#r4").hide();
+                $("#r5").hide();
+            }
+            if (rsp == 4) {
+                $("#r1").show();
+                $("#r2").show();
+                $("#r3").show();
+                $("#r4").show();
+                $("#r5").hide();
+            }
+            if (rsp == 5) {
+                $("#r1").show();
+                $("#r2").show();
+                $("#r3").show();
+                $("#r4").show();
+                $("#r5").show();
             }
             if (rsp == 3 && second_racer1) {
                 // Add Racer 3 in Racer 2's game
