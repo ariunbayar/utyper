@@ -60,6 +60,7 @@ var commands = {
                     racer1(false);
                     // Racer 2 - current racer
                     racer2(true);
+                    second_racer1 = true;
 
                     $.ajax({
                         url: "race.php",
@@ -83,6 +84,8 @@ var commands = {
                     racer2(false);
                     // Racer 3 - current racer
                     racer3(true);
+                    second_racer2 = true;
+                    third_racer1 = true;
 
                     $.ajax({
                         url: "race.php",
@@ -107,6 +110,9 @@ var commands = {
                     racer3(false);
                     // Racer 4 - current racer
                     racer4(true);
+                    second_racer3 = true;
+                    third_racer2 = true;
+                    fourth_racer = true;
 
                     $.ajax({
                         url: "race.php",
@@ -276,7 +282,7 @@ var commands = {
             countdown_el.css('background-color', 'green');
             changeStatus(true);
         }
-
+        checkRacers(2);
         // continue countdown or start typing
         if (countdown > 0) {
             setTimeout('commands.timer();', 1000);
@@ -445,39 +451,49 @@ var checkRacers = function(status_num) {
                 $("#r4").hide();
                 $("#r5").hide();
             }
-            if (rsp == 3 && !second_racer1) {
+            if (rsp == 3 && second_racer1) {
                 // Add Racer 3 in Racer 2's game
                 racer3(false);
+                $("#r3").show();
 
                 $("#r4").hide();
                 $("#r5").hide();
-                second_racer1 = true;
-            } else if (rsp == 4 && !second_racer2) {
+                second_racer1 = false;
+            } else if (rsp == 4 && second_racer2) {
                 // Add Racer 3,4 in Racer 2's game
                 racer3(false);
                 racer4(false);
+                $("#r3").show();
+                $("#r4").show();
 
                 $("#r5").hide();
-                second_racer2 = true;
-            } else if (rsp == 4 && !third_racer1) {
+                second_racer2 = false;
+            } else if (rsp == 4 && third_racer1) {
                 // Add Racer 4 in Racer 3's game
                 racer4(false);
-                third_racer1 = true;
-            } else if (rsp == 5 && !second_racer3) {
+                $("#r4").show();
+                third_racer1 = false;
+            } else if (rsp == 5 && second_racer3) {
                 // Add Racer 3,4,5 in Racer 2's game
                 racer3(false);
                 racer4(false);
                 racer5(false);
-                second_racer3 = true;
-            } else if (rsp == 5 && !third_racer2) {
+                $("#r3").show();
+                $("#r4").show();
+                $("#r5").show();
+                second_racer3 = false;
+            } else if (rsp == 5 && third_racer2) {
                 // Add Racer 4,5 in Racer 3's game
                 racer4(false);
                 racer5(false);
-                third_racer2 = true;
-            } else if (rsp == 5 && !fourth_racer) {
+                $("#r4").show();
+                $("#r5").show();
+                third_racer2 = false;
+            } else if (rsp == 5 && fourth_racer) {
                 // Add Racer 5 in Racer 4's game
                 racer5(false);
-                fourth_racer = true;
+                $("#r5").show();
+                fourth_racer = false;
             }
         }
     });
