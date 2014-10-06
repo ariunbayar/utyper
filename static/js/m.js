@@ -30,7 +30,7 @@ var commands = {
     menu: function() {
         $("#game").hide();
         $("#menu").show();
-        removePlayer();
+        changeStatus(false);
         location.reload();
     },
     start_single: function() {
@@ -39,7 +39,7 @@ var commands = {
         is_single = true;
 
         racer1(false);
-        commands.init_jquery(5);
+        commands.init_jquery(4);
     },
     start_multiple: function() {
         $("#menu").hide();
@@ -47,8 +47,10 @@ var commands = {
 
         $.ajax({
             url: "controller.php",
+            data: "status=2",
             type: "GET",
             success: function(rsp) {
+                console.log(rsp);
                 if (rsp == 1) {
                     // Racer 1 - creator - current racer
                     racer1(true);
@@ -176,6 +178,7 @@ var commands = {
 
             $.ajax({
                 url: "controller.php",
+                data: "status=2",
                 type: "GET",
                 success: function(player_count) {
                     console.log(player_count);
@@ -183,6 +186,7 @@ var commands = {
                         is_creator = false;
                         // Add racer 2 in racer1's game
                         racer2(false);
+                        $("#r2").show();
 
                         $.ajax({
                             url: "race.php",
@@ -195,6 +199,7 @@ var commands = {
                         is_creator = false;
                         // Add racer 3 in racer1's game
                         racer3(false);
+                        $("#r3").show();
 
                         $.ajax({
                             url: "race.php",
@@ -207,6 +212,7 @@ var commands = {
                         is_creator = false;
                         // Add racer 4 in racer1's game
                         racer4(false);
+                        $("#r4").show();
 
                         $.ajax({
                             url: "race.php",
@@ -219,6 +225,7 @@ var commands = {
                         is_creator = false;
                         // Add racer 5 in racer1's game
                         racer5(false);
+                        $("#r5").show();
 
                         $.ajax({
                             url: "race.php",
@@ -230,7 +237,7 @@ var commands = {
                     }
                 }
             });
-            checkPlayer();
+            checkRacers(2);
         }
         countdown_el.html(countdown);
         if (countdown > 4) {
@@ -267,6 +274,7 @@ var commands = {
 
         if (countdown < 2) {
             countdown_el.css('background-color', 'green');
+            changeStatus(true);
         }
 
         // continue countdown or start typing
@@ -336,6 +344,7 @@ var commands = {
                     }
                 }
             });
+            checkRacers(3);
         } else {
             cpm_container1.html(" : " + Math.round(cpm) + " cpm");
         }
@@ -372,42 +381,70 @@ var commands = {
     }
 }
 
+// status 1 - ready
+// status 2 - waiting
+// status 3 - playing
+
+var changeStatus = function(tmp) {
+    if (tmp) {
+        $.ajax({
+            url: "controller.php",
+            type: "GET",
+            data: "status=3",
+            success: function(rsp) {
+            }
+        });
+    } else {
+        $.ajax({
+            url: "controller.php",
+            type: "GET",
+            data: "status=1&cpm=1",
+            success: function(rsp) {
+            }
+        });
+    }
+}
+
 var removePlayer = function() {
     $.ajax({
         url: "destroy.php",
         type: "GET",
-        data: "remove=player",
         success: function(rsp) {
-            console.log(rsp);
         }
     });
 }
-removePlayer();
+//removePlayer();
 
-var removeGame = function() {
-    $.ajax({
-        url: "destroy.php",
-        type: "GET",
-        data: "remove=game",
-        success: function(rsp) {
-            console.log(rsp);
-        }
-    });
-}
-
-var checkPlayer = function() {
+var checkRacers = function(status_num) {
     $.ajax({
         url: "controller.php",
+        data: "check_stat=" + status_num,
         type: "GET",
         success: function(rsp) {
+            if (rsp == 1) {
+                $("#r2").hide();
+                $("#r3").hide();
+                $("#r4").hide();
+                $("#r5").hide();
+            }
+            if (rsp == 2) {
+                $("#r3").hide();
+                $("#r4").hide();
+                $("#r5").hide();
+            }
             if (rsp == 3 && !second_racer1) {
                 // Add Racer 3 in Racer 2's game
                 racer3(false);
+
+                $("#r4").hide();
+                $("#r5").hide();
                 second_racer1 = true;
             } else if (rsp == 4 && !second_racer2) {
                 // Add Racer 3,4 in Racer 2's game
                 racer3(false);
                 racer4(false);
+
+                $("#r5").hide();
                 second_racer2 = true;
             } else if (rsp == 4 && !third_racer1) {
                 // Add Racer 4 in Racer 3's game
@@ -506,4 +543,9 @@ var racer5 = function(current) {
         racer5_cur_el.html('___');
     }
     racer5_el.html(img_el5);
+}
+
+// Remove racer when browser close
+window.onbeforeunload = function() {
+    removePlayer(); // it also removes race.
 }

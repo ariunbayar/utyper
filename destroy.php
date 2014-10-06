@@ -1,22 +1,30 @@
 <?php
 session_start();
 $session_id = session_id();
-$action = $_GET["remove"];
 $_table = "u_users";
-$_table1 = "u_race";
+$_table2 = "u_race";
 
-if (isset($action) && $action == "player") {
-    actionDelete($_table, $session_id);
-    unset($session_id);
-}
-// TODO: else
+actionDelete($_table, $session_id);
+actionDeleteRace($_table2, $session_id);
 
 function actionDelete($_table, $session_id) {
     $link = open_database_connection();
 
     $query = "
         DELETE FROM $_table
-        WHERE session = '$session_id'
+        WHERE `creator` = '$session_id'
+    ";
+    $result = mysqli_query($link, $query) or die(mysql_error());
+
+    close_database_connection($link);
+}
+
+function actionDeleteRace($_table2, $session_id) {
+    $link = open_database_connection();
+
+    $query = "
+        DELETE FROM $_table2
+        WHERE `creator` = '$session_id'
     ";
     $result = mysqli_query($link, $query) or die(mysql_error());
 
