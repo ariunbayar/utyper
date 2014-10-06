@@ -1,11 +1,14 @@
 <?php
 session_start();
 $session_id = session_id();
+$remove = $_GET["remove"];
 $_table = "u_users";
 $_table2 = "u_race";
 
-actionDelete($_table, $session_id);
-actionDeleteRace($_table2, $session_id);
+switch ($remove) {
+    case "player" : actionDelete($_table, $session_id); break;
+    case "race"   : actionDeleteRace($_table2, $session_id); break;
+}
 
 function actionDelete($_table, $session_id) {
     $link = open_database_connection();

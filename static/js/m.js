@@ -409,11 +409,24 @@ var removePlayer = function() {
     $.ajax({
         url: "destroy.php",
         type: "GET",
+        data: "remove=player",
         success: function(rsp) {
         }
     });
 }
 //removePlayer();
+
+var removeRace = function() {
+    $.ajax({
+        url: "destroy.php",
+        type: "GET",
+        data: "remove=race",
+        success: function(rsp) {
+            console.log(rsp);
+        }
+    });
+}
+removeRace();
 
 var checkRacers = function(status_num) {
     $.ajax({
