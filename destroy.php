@@ -2,7 +2,7 @@
 session_start();
 $session_id = session_id();
 $remove = $_GET["remove"];
-$_table = "u_users";
+$_table = "race";
 $_table2 = "u_race";
 
 switch ($remove) {
@@ -15,7 +15,7 @@ function actionDelete($_table, $session_id) {
 
     $query = "
         DELETE FROM $_table
-        WHERE `creator` = '$session_id'
+        WHERE `session_id` = '$session_id'
     ";
     $result = mysqli_query($link, $query) or die(mysql_error());
 

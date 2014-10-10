@@ -1,60 +1,89 @@
 <?php
+include_once(__DIR__ . "/helper.php");
 session_start();
 $get_count = true;
 $session_id = session_id();
-$cpm = $_GET["cpm"];
-$status = (int)$_GET["status"];
-$check_stat = $_GET["check_stat"] ? (int)$_GET["check_stat"] : 2;
-// status 1 - ready
-// status 2 - waiting
-// status 3 - playing
-$_table = "u_users";
+$_table = "race";
 
-if (isset($cpm)) $get_count = false;
+$is_first = $_GET["is_first"] ? $_GET["is_first"] : false;
 
-if (isset($session_id)) {
-    // Check session id
-    $result = actionCheck($session_id, $_table);
-    $count = $result->num_rows;
+$cpm = $_GET["cpm"] ? $_GET["cpm"] : 0;
 
-    if ($count == 0) {
-        $is_edit = false;
-        actionSave($_table, $session_id, $is_edit, $cpm, $status);
-    } else {
-        $is_edit = true;
-        actionSave($_table, $session_id, $is_edit, $cpm, $status);
-    }
-
-    $response = actionGetAll($_table, $get_count, $check_stat);
-    echo $response;
+$action = $_GET["action"];
+if ($action == "checkTable") {
+    $response = actionCheckTable($_table);
+    echo (int)$response;
+    return;
 }
 
-function actionCheck($session_id, $_table) {
+if ($is_first) {
+    $name = substr(md5(microtime()), 0, 4);
+} else {
+    $name = $_GET["name"];
+    $get_count = false;
+}
+
+if (isset($cpm) && $cpm != 0) {
+    $get_count = false;
+    $startTimer = $_GET["startTimer"];
+    $name = actionGetName($_table);
+}
+
+
+$result = actionCheck($_table, $session_id, $name);
+$count = $result->num_rows;
+
+if ($count == 0) {
+    $is_edit = false;
+    actionSave($_table, $name, $session_id, $is_edit, $cpm, $timer);
+} else {
+    if ($startTimer) {
+        $timer = actionGetTimer($_table, $session_id);
+        if ($timer != 0) {
+            $timer--;
+            $is_edit = true;
+            actionSave($_table, $name, $session_id, $is_edit, $cpm, $timer);
+        }
+    }
+}
+
+$response = actionGetAll($_table, $get_count, $name);
+echo $response;
+
+
+
+
+
+function actionCheck($_table, $session_id, $name) {
     $link = open_database_connection();
+
     $query = "
-            SELECT * FROM $_table
-            WHERE `session` = '$session_id'
+            SELECT `id` FROM $_table
+            WHERE `session_id` = '$session_id'
             ";
-    $result = mysqli_query($link, $query) or die(mysql_error());
+    $result = mysqli_query($link, $query) or die(mysqli_error());
     close_database_connection($link);
 
     return $result;
 }
 
-
-function actionGetAll($_table, $get_count, $check_stat) {
+function actionGetAll($_table, $get_count, $name) {
     $link = open_database_connection();
+
     if ($get_count) {
-        $query = "SELECT `id` FROM $_table WHERE `status`= '$check_stat'";
-        $result = mysqli_query($link, $query) or die(mysql_error());
+        $query = "SELECT `id` FROM $_table";
+        $result = mysqli_query($link, $query) or die(mysqli_error());
         $rsp = $result->num_rows;
     } else {
-        $query = "SELECT `cpm` FROM $_table WHERE `status`= 3";
-        $result = mysqli_query($link, $query) or die(mysql_error());
+        $query = "SELECT `timer`, `cpm` FROM $_table WHERE `name`= '$name'";
+        $result = mysqli_query($link, $query) or die(mysqli_error());
         while ($row = mysqli_fetch_assoc($result)) {
-            $cpms[] = $row["cpm"];
+            $data[] = [
+                "cpm" => $row["cpm"],
+                "timer" => $row["timer"],
+            ];
         }
-        $rsp = implode(" ", $cpms);
+        $rsp = json_encode($data);
     }
 
     close_database_connection($link);
@@ -62,27 +91,18 @@ function actionGetAll($_table, $get_count, $check_stat) {
     return $rsp;
 }
 
-function actionSave($_table, $session_id, $is_edit, $cpm = 0, $status) {
+function actionSave($_table, $name, $session_id, $is_edit, $cpm, $timer) {
     $link = open_database_connection();
     if ($is_edit) {
-        if ($status != 0) {
-            $query = "
-                UPDATE $_table SET `status`='$status'
-                WHERE `session` = '$session_id'
-            ";
-            $result = mysqli_query($link, $query) or die(mysql_error());
-        }
-        if ($cpm !=0) {
-            $query = "
-                UPDATE $_table SET `cpm`='$cpm'
-                WHERE `session` = '$session_id'
-            ";
-            $result = mysqli_query($link, $query) or die(mysql_error());
-        }
+        $query = "
+            UPDATE $_table SET `cpm`='$cpm', `timer` = '$timer'
+            WHERE `session_id` = '$session_id'
+        ";
+        $result = mysqli_query($link, $query) or die(mysql_error());
     } else {
         $query = "
-            INSERT INTO $_table(`id`, `session`, `cpm`, `status`)
-            VALUES(NULL, '$session_id', '$cpm', '$status')
+            INSERT INTO $_table(`id`, `name`, `session_id`, `cpm`, `timer`)
+            VALUES(NULL, '$name', '$session_id', '$cpm', 60)
         ";
         $result = mysqli_query($link, $query) or die(mysql_error());
     }
@@ -90,16 +110,4 @@ function actionSave($_table, $session_id, $is_edit, $cpm = 0, $status) {
     close_database_connection($link);
 }
 
-function open_database_connection()
-{
-    require 'local_settings.php';
-    $link = mysqli_connect($db_host, $db_username, $db_password, $db_name);
-    mysqli_query($link, "SET NAMES 'UTF8'");
-    return $link;
-}
-
-function close_database_connection($link)
-{
-    mysqli_close($link);
-}
 ?>

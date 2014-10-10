@@ -8,24 +8,24 @@
     CREATE DATABASE utyper;
 
     // Create table query:
-    CREATE TABLE `u_users`
+    CREATE TABLE `countdown`
     (
         `id` INT NOT NULL AUTO_INCREMENT,
-        `session` VARCHAR(100) NOT NULL,
-        `cpm` INT NOT NULL DEFAULT 0,
-        `status` TINYINT NOT NULL DEFAULT 0,
+        `time` INT NOT NULL DEFAULT 0,
+        `name` VARCHAR(4) NOT NULL,
+        `topic` INT NOT NULL DEFAULT 0,
 
         PRIMARY KEY(`id`)
     );
 
-    // Create table query:
-    CREATE TABLE `u_race`
+    // Create table race
+    CREATE TABLE `race`
     (
         `id` INT NOT NULL AUTO_INCREMENT,
-        `creator` VARCHAR(100) NOT NULL,
-        `topic` INT NOT NULL DEFAULT 0,
-        `countdown` INT NOT NULL DEFAULT 0,
-        `follower` INT NOT NULL DEFAULT 0,
+        `name` VARCHAR(4) NOT NULL,
+        `session_id` VARCHAR(100) NOT NULL,
+        `cpm` INT NOT NULL DEFAULT 0,
+        `timer` INT NOT NULL DEFAULT 60,
 
         PRIMARY KEY(`id`)
     );
